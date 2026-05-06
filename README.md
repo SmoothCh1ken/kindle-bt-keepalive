@@ -100,8 +100,8 @@ kindle-bt-keepalive/
 
 ### 1. Download and Copy Files
 
-1. Download the latest [Release](https://github.com/USERNAME/kindle-bt-keepalive/releases) (ZIP file)
-2. Extract the ZIP on your computer
+1. Download the project: **[Clone or Download ZIP](https://github.com/USERNAME/kindle-bt-keepalive)** from GitHub
+2. Extract the ZIP on your computer (or clone the repository)
 3. Connect your Kindle via USB
 4. On your Kindle drive, copy the `btkeepalive/` folder to `/mnt/us/`
 5. On your Kindle drive, copy the `extensions/` folder to `/mnt/us/`
