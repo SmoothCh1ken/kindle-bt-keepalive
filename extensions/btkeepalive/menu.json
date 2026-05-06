@@ -1,0 +1,30 @@
+{
+  "items": [
+    {
+      "name": "Bluetooth Keepalive",
+      "priority": 1,
+      "items": [
+        {
+          "name": "Get MAC Address",
+          "priority": 1,
+          "action": "/mnt/us/extensions/btkeepalive/get_mac.sh"
+        },
+        {
+          "name": "Reading Mode",
+          "priority": 2,
+          "action": "/mnt/us/extensions/btkeepalive/set_reading.sh"
+        },
+        {
+          "name": "Always On",
+          "priority": 3,
+          "action": "/mnt/us/extensions/btkeepalive/set_always_on.sh"
+        },
+        {
+          "name": "Default (Disable)",
+          "priority": 4,
+          "action": "/mnt/us/extensions/btkeepalive/set_default.sh"
+        }
+      ]
+    }
+  ]
+}
