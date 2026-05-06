@@ -15,6 +15,27 @@ Tested on **Kindle Paperwhite 11th Generation, firmware 5.18.5.0.1**.
 
 ---
 
+## Rationale & Inspiration 🍃
+
+For me, reading is far more than a mere intellectual exercise; it is a profoundly immersive ritual. There is an unparalleled serenity in losing oneself within the pages of a book while enveloped by the rhythmic cadence of **falling rain** or the evocative symphony of a **secluded woodland**.
+
+This project was born out of a necessity to preserve that very atmosphere. I discovered that the Kindle's power-saving measures often sever the Bluetooth connection during periods of sonic subtlety, abruptly shattering the immersion. This script is a modest endeavor, conceived for **educational purposes and personal exploration**, to ensure that the whisper of the forest or the patter of the rain remains uninterrupted.
+
+---
+
+## Before You Start
+
+**Important**: Before downloading this project, you must pair your Bluetooth headphones with your Kindle at least once:
+
+1. Turn on your Bluetooth headphones
+2. On your Kindle: **Settings → Bluetooth**
+3. Select your device and complete pairing
+4. Once paired, you can proceed with the [Installation](#installation) steps below
+
+> **Note**: This project requires a jailbroken Kindle with [KUAL](https://wiki.mobileread.com/wiki/KUAL) installed.
+
+---
+
 ## Features ⚡
 
 - **KUAL Menu Integration**: No more SSH or KTerm needed after setup
@@ -67,11 +88,11 @@ kindle-bt-keepalive/
 
 ## Prerequisites
 
-- Jailbroken Kindle
-- [KUAL](https://wiki.mobileread.com/wiki/KUAL) installed on your Kindle
+- Jailbroken Kindle with [KUAL](https://wiki.mobileread.com/wiki/KUAL) installed
 - SSH access via [kindle-usbnetlite](https://github.com/notmarek/kindle-usbnetlite) or KTerm (only for initial setup)
 - [KinAMP](https://github.com/kbarni/KinAMP) by [@kbarni](https://github.com/kbarni) — native music player (optional, but recommended)
-- Bluetooth device already paired at least once via the Kindle UI (Settings → Bluetooth)
+
+> **Note**: Make sure you've completed the [Before You Start](#before-you-start) steps before proceeding.
 
 ---
 
@@ -79,11 +100,13 @@ kindle-bt-keepalive/
 
 ### 1. Download and Copy Files
 
-```bash
-# On your Kindle via SSH/KTerm:
-# Copy btkeepalive/ folder to /mnt/us/btkeepalive/
-# Copy extensions/ folder to /mnt/us/extensions/
-```
+1. Download the latest [Release](https://github.com/USERNAME/kindle-bt-keepalive/releases) (ZIP file)
+2. Extract the ZIP on your computer
+3. Connect your Kindle via USB
+4. On your Kindle drive, copy the `btkeepalive/` folder to `/mnt/us/`
+5. On your Kindle drive, copy the `extensions/` folder to `/mnt/us/`
+
+> **Windows users**: Simply copy or drag-and-drop the `btkeepalive/` and `extensions/` folders from the extracted ZIP directly to the root of your Kindle drive in Explorer (usually named "Kindle").
 
 ### 2. Configure Your Bluetooth Device
 
@@ -99,9 +122,10 @@ Edit `/mnt/us/btkeepalive/btkeepalive.conf` and replace the MAC address.
 - Pair your headphones via Kindle: Settings → Bluetooth
 - Click **"Get MAC Address"** in the KUAL Bluetooth Keepalive menu (first menu item)
 - A Pillow notification shows your device's MAC address
-- Alternatively, via SSH: `lipc-get-prop com.lab126.btfd ConnectedDevices`
+- Alternatively, via SSH or Kterm: `cat /var/local/zbluetooth/bt_config.conf`
 
 **Edit the config file:**
+
 ```bash
 # Replace MAC="XX:XX:XX:XX:XX:XX" with your device MAC
 # Example: MAC="75-c8-28-1a-12-b2"
@@ -113,9 +137,11 @@ Edit `/mnt/us/btkeepalive/btkeepalive.conf` and replace the MAC address.
 2. You'll see **Bluetooth Keepalive** in the menu
 3. **First click "Get MAC Address"** (first menu item) to detect your paired device MAC
 4. A notification shows: "Device MAC: XX:XX:XX:XX:XX:XX"
-5. Copy the MAC and edit `/mnt/us/btkeepalive/btkeepalive.conf` with any text editor
+5. Copy the MAC and edit [`/mnt/us/btkeepalive/btkeepalive.conf`](#configuration-file) with any text editor
 6. Select **Reading Mode** or **Always On**
 7. A notification confirms the mode change
+
+> **Tip**: You can verify the service is running with the [Usage Verification](#usage-verification) steps.
 
 ---
 
@@ -125,7 +151,7 @@ Only one file to edit: `/mnt/us/btkeepalive/btkeepalive.conf`
 
 ```bash
 # MAC address of your Bluetooth headphones
-MAC="74:74:46:0F:C0:4B"  # ← Replace with your device MAC
+MAC="XX:XX:XX:XX:XX:XX"  # ← Replace with your device MAC
 
 # Minimum battery percentage before allowing sleep (Always On mode only)
 THRESHOLD=20
@@ -177,14 +203,6 @@ tail -f /mnt/us/btkeepalive/log/btkeepalive.log
 
 ---
 
-## Rationale & Inspiration 🍃
-
-For me, reading is far more than a mere intellectual exercise; it is a profoundly immersive ritual. There is an unparalleled serenity in losing oneself within the pages of a book while enveloped by the rhythmic cadence of **falling rain** or the evocative symphony of a **secluded woodland**.
-
-This project was born out of a necessity to preserve that very atmosphere. I discovered that the Kindle's power-saving measures often sever the Bluetooth connection during periods of sonic subtlety, abruptly shattering the immersion. This script is a modest endeavor, conceived for **educational purposes and personal exploration**, to ensure that the whisper of the forest or the patter of the rain remains uninterrupted.
-
----
-
 ## ⚠️ Disclaimer
 
 **This project is strictly the result of academic study and personal experimentation.**
@@ -196,3 +214,9 @@ The author **disclaims all responsibility** for any potential hardware or softwa
 ## 📄 License
 
 This project is licensed under the [MIT License](https://github.com/imanubdesigner/kindle-bt-keepalive?tab=MIT-1-ov-file#readme) - see the LICENSE file for details.
+
+---
+
+<p align="center">
+  <i>Designed, drawn and programmed with ❤️ and ☕️ for all readers everywhere 📚.</i>
+</p>
