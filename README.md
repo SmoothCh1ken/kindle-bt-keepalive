@@ -40,6 +40,7 @@ This project was born out of a necessity to preserve that very atmosphere. I dis
 
 - **KUAL Menu Integration**: No more SSH or KTerm needed after setup
 - **Get MAC Address**: One-click MAC detection via KUAL menu
+- **Current Mode**: Check active mode with one click
 - **Three Modes**: Reading Mode, Always On, and Default (Disable)
 - **Persistent**: Settings survive reboots via Upstart
 - **Zero Configuration**: Single config file with MAC address
