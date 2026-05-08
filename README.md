@@ -95,7 +95,7 @@ kindle-bt-keepalive/
 ## Prerequisites
 
 - Jailbroken Kindle with [KUAL](https://wiki.mobileread.com/wiki/KUAL) installed
-- SSH access via [kindle-usbnetlite](https://github.com/notmarek/kindle-usbnetlite) or KTerm (only for initial setup)
+- SSH access via [kindle-usbnetlite](https://github.com/notmarek/kindle-usbnetlite) or KTerm (only for [Usage Verification](#usage-verification))
 - [KinAMP](https://github.com/kbarni/KinAMP) by [@kbarni](https://github.com/kbarni) — native music player (optional, but recommended)
 
 > **Note**: Make sure you've completed the [Before You Start](#before-you-start) steps before proceeding.
