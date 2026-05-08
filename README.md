@@ -46,6 +46,11 @@ This project was born out of a necessity to preserve that very atmosphere. I dis
 - **Zero Configuration**: Single config file with MAC address
 - **Pillow Notifications**: Visual feedback on mode changes
 
+<p align="center">
+  <img src="screenshots/bluetooth-keepalive-kual.png" alt="KUAL Menu Integration" width="280">
+  <img src="screenshots/current_mode.png" alt="Current Mode Notification" width="280">
+</p>
+
 ---
 
 ## Choose Your Mode
