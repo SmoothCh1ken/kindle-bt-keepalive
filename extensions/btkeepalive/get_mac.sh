@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Get paired Bluetooth device MAC address and show via Pillow notification
 

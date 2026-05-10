@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Show current BT Keepalive mode via Pillow notification
 
 CONFIG_FILE="/mnt/us/btkeepalive/config.conf"
@@ -8,7 +8,7 @@ if [ ! -f "$CONFIG_FILE" ]; then
   exit 1
 fi
 
-MODE=$(tr -d '[:space:]' <"$CONFIG_FILE")
+read -r MODE < "$CONFIG_FILE"
 case "$MODE" in
 "reading")
   MSG="Reading Mode"

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Default (Disable) Mode:
 #   1. Writes "default" to config.conf (persists across reboots)
 #   2. Stops Upstart service FIRST (prevents respawn fighting pkill)

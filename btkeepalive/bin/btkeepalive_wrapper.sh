@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Wrapper script to start the correct mode on boot via Upstart.
 # Reads mode from /mnt/us/btkeepalive/config.conf and execs the
 # appropriate btconnect.sh. Called exclusively by the Upstart job.
@@ -15,7 +15,7 @@ echo "$(date) - [wrapper] started" >> "$LOGFILE"
 
 # Read mode from config; default to disabled if file missing or value unknown
 if [ -f "$CONFIG_FILE" ]; then
-  MODE=$(tr -d '[:space:]' < "$CONFIG_FILE")
+  read -r MODE < "$CONFIG_FILE"
 else
   MODE="default"
 fi
@@ -24,13 +24,13 @@ echo "$(date) - [wrapper] mode=$MODE" >> "$LOGFILE"
 
 case "$MODE" in
   "reading")
-    exec /bin/bash "$READING_SCRIPT"
+    exec /bin/sh "$READING_SCRIPT"
     ;;
   "always-on")
-    exec /bin/bash "$ALWAYS_ON_SCRIPT"
+    exec /bin/sh "$ALWAYS_ON_SCRIPT"
     ;;
   *)
-    echo "$(date) - [wrapper] default mode, exiting cleanly" >> "$LOGFILE"
-    exit 0
+    echo "$(date) - [wrapper] default mode, entering idle loop" >> "$LOGFILE"
+    while :; do sleep 60; done
     ;;
 esac

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Enable Always On Mode:
 #   1. Writes "always-on" to config.conf (persists across reboots)
 #   2. Installs the Upstart job on first run (boot persistence)
@@ -23,10 +23,9 @@ chmod +x "$ALWAYS_ON_SCRIPT" "$WRAPPER_SCRIPT" 2>/dev/null
 echo "always-on" > "$CONFIG_FILE"
 echo "$(date) - [set_always_on] config set to: always-on" >> "$LOGFILE"
 
-# --- 2. Install Upstart job (first time only, requires rw root) ---
-if [ ! -f "$UPSTART_CONF" ]; then
-    mntroot rw 2>/dev/null
-    cat > "$UPSTART_CONF" << 'EOF'
+# --- 2. Install/reinstall Upstart job (boot persistence) ---
+mntroot rw 2>/dev/null
+cat > "$UPSTART_CONF" << 'EOF'
 start on started lab126
 stop on stopping lab126
 
@@ -34,13 +33,12 @@ respawn
 respawn limit 5 60
 
 script
-    exec /bin/bash /mnt/us/btkeepalive/bin/btkeepalive_wrapper.sh
+    exec /bin/sh /mnt/us/btkeepalive/bin/btkeepalive_wrapper.sh
 end script
 EOF
-    mntroot ro 2>/dev/null
-    echo "$(date) - [set_always_on] Upstart job installed" >> "$LOGFILE"
-    initctl reload-configuration 2>/dev/null || true
-fi
+mntroot ro 2>/dev/null
+echo "$(date) - [set_always_on] Upstart job installed" >> "$LOGFILE"
+initctl reload-configuration 2>/dev/null || true
 
 # --- 3. Stop existing service and processes cleanly ---
 # Stop Upstart first so respawn doesn't fight us
@@ -54,7 +52,7 @@ sleep 1
 # --- 4. Start in always-on mode ---
 echo "$(date) - [set_always_on] starting Always On Mode" >> "$LOGFILE"
 initctl start btkeepalive 2>/dev/null || \
-    nohup /bin/bash "$ALWAYS_ON_SCRIPT" > /dev/null 2>&1 &
+    nohup /bin/sh "$ALWAYS_ON_SCRIPT" > /dev/null 2>&1 &
 
 # --- 5. Notify user ---
 lipc-set-prop com.lab126.pillow pillowAlert \
