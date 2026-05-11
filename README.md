@@ -191,9 +191,6 @@ After selecting a mode, verify with:
 initctl status btkeepalive
 # Expected: "btkeepalive start/running, process XXXX"
 
-# Check active processes
-ps | grep btconnect
-
 # View logs
 tail -f /mnt/us/btkeepalive/log/wrapper.log
 tail -f /mnt/us/btkeepalive/log/btkeepalive.log

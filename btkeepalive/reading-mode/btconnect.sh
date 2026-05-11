@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Reading Mode
+
 CONFIG_FILE="/mnt/us/btkeepalive/btkeepalive.conf"
 if [ -f "$CONFIG_FILE" ]; then
   . "$CONFIG_FILE"

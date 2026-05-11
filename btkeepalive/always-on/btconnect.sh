@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# Always-On
+
 CONFIG_FILE="/mnt/us/btkeepalive/btkeepalive.conf"
 if [ -f "$CONFIG_FILE" ]; then
   . "$CONFIG_FILE"
@@ -9,6 +11,8 @@ else
 fi
 
 mkdir -p "$(dirname "$LOGFILE")"
+
+trap 'lipc-set-prop com.lab126.powerd deferSuspend 0 2>/dev/null; echo "$(date) - sleep prevention released (trap)" >> "$LOGFILE"' EXIT
 
 echo "$(date) - always-on mode started" >> "$LOGFILE"
 

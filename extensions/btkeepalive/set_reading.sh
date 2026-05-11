@@ -16,6 +16,10 @@ LOGFILE="$BASE_DIR/log/wrapper.log"
 # Ensure runtime directories exist
 mkdir -p "$BASE_DIR/log"
 
+# Release any active sleep deferral from Always On mode immediately
+lipc-set-prop com.lab126.powerd deferSuspend 0 2>/dev/null
+echo "$(date) - [set_reading] sleep prevention released" >> "$LOGFILE"
+
 # Ensure all required scripts are executable
 chmod +x "$READING_SCRIPT" "$WRAPPER_SCRIPT" 2>/dev/null
 

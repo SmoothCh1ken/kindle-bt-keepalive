@@ -14,6 +14,10 @@ LOGFILE="$BASE_DIR/log/wrapper.log"
 # Ensure log dir exists
 mkdir -p "$BASE_DIR/log"
 
+# Release any active sleep deferral from Always On mode immediately
+lipc-set-prop com.lab126.powerd deferSuspend 0 2>/dev/null
+echo "$(date) - [set_default] sleep prevention released" >> "$LOGFILE"
+
 # --- 1. Persist mode ---
 echo "default" > "$CONFIG_FILE"
 echo "$(date) - [set_default] config set to: default" >> "$LOGFILE"
