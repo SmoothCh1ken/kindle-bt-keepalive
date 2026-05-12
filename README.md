@@ -2,8 +2,8 @@
 
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="logo/kindle-bt-keepalive-logo-dark.png">
-    <img alt="kindle-bt-keepalive logo" src="logo/kindle-bt-keepalive-logo.png" width="452">
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo/kindle-bt-keepalive-logo-dark.png">
+    <img alt="kindle-bt-keepalive logo" src="assets/logo/kindle-bt-keepalive-logo.png" width="452">
   </picture>
 </p>
 
@@ -46,9 +46,13 @@ This project was born out of a necessity to preserve that very atmosphere. I dis
 - **Zero Configuration**: Single config file with MAC address
 - **Pillow Notifications**: Visual feedback on mode changes
 
+---
+
+## Screenshots
+
 <p align="center">
-  <img src="screenshots/bluetooth-keepalive-kual.png" alt="KUAL Menu Integration" width="280">
-  <img src="screenshots/current_mode.png" alt="Current Mode Notification" width="280">
+  <img src="assets/screenshots/bluetooth-keepalive-kual.png" alt="KUAL Menu Integration" width="280">
+  <img src="assets/screenshots/current_mode.png" alt="Current Mode Notification" width="280">
 </p>
 
 ---
@@ -84,10 +88,13 @@ kindle-bt-keepalive/
 │       ├── config.xml        ← KUAL extension config
 │       ├── menu.json         ← KUAL menu definition
 │       ├── get_mac.sh        ← MAC address detection
+│       ├── get_mode.sh       ← Current mode display
 │       ├── set_reading.sh
 │       ├── set_always_on.sh
 │       └── set_default.sh
-└── logo/                     ← Project assets
+└── assets/                   ← Logos and screenshots
+    ├── logo/
+    └── screenshots/
 ```
 
 ---
