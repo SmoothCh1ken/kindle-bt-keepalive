@@ -228,5 +228,5 @@ This project is licensed under the [MIT License](https://github.com/imanubdesign
 <br>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/-Crafted%20with%20%E2%9D%A4%EF%B8%8F%20%E2%98%95%20for%20readers%20everywhere%20%F0%9F%93%9A-888888?style=for-the-badge" alt="footer">
+  <img src="https://img.shields.io/badge/-Craated%20with%20%E2%9D%A4%EF%B8%8F%20%E2%98%95%20for%20readers%20everywhere%20%F0%9F%93%9A-888888?style=for-the-badge" alt="footer">
 </p>
