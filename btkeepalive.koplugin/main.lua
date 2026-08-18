@@ -41,9 +41,18 @@ function BTKeepalive:addToMainMenu(menu_items)
     }
 end
 
+-- NOTA TECNICA: en Kindles 8th-10th gen (chip NXP + radio Broadcom BCM4343)
+-- el stack Bluetooth es Broadcom BSA (bsa_server sobre UART). No existe un
+-- archivo de config legible ni en /var/local/zbluetooth ni en /opt/zbluetooth
+-- (esas rutas son exclusivas de 11th gen+ con pila Bluedroid/btmanagerd).
+-- Se consulta en su lugar la propiedad LIPC "ListPaired" de com.lab126.btfd,
+-- que es la capa de abstraccion comun a ambos stacks Bluetooth.
 function BTKeepalive:getMACAddress()
-    local f = io.open("/var/local/zbluetooth/bt_config.conf", "r")
-    if not f then
+    local handle = io.popen("lipc-get-prop com.lab126.btfd ListPaired 2>/dev/null")
+    local raw = handle and handle:read("*a") or ""
+    if handle then handle:close() end
+
+    if raw == "" then
         UIManager:show(InfoMessage:new{
             text = _("No paired devices found.\nPair via Settings → Bluetooth first."),
         })
@@ -51,22 +60,14 @@ function BTKeepalive:getMACAddress()
     end
 
     local macs = {}
-    local names = {}
-    local current_mac
-
-    for line in f:lines() do
-        local mac = line:match("^%[([0-9a-fA-F:]+)%]$")
-        if mac then
-            current_mac = mac
+    local seen = {}
+    for mac in raw:gmatch("(%x%x:%x%x:%x%x:%x%x:%x%x:%x%x)") do
+        mac = mac:upper()
+        if not seen[mac] then
+            seen[mac] = true
             table.insert(macs, mac)
-        elseif current_mac then
-            local name = line:match("^Name%s*=%s*(.+)$")
-            if name then
-                names[current_mac] = name
-            end
         end
     end
-    f:close()
 
     if #macs == 0 then
         UIManager:show(InfoMessage:new{
@@ -78,13 +79,7 @@ function BTKeepalive:getMACAddress()
     local start = math.max(1, #macs - 2)
     local lines = {}
     for i = start, #macs do
-        local mac = macs[i]
-        local name = names[mac]
-        if name then
-            table.insert(lines, mac .. " (" .. name .. ")")
-        else
-            table.insert(lines, mac)
-        end
+        table.insert(lines, macs[i])
     end
 
     UIManager:show(InfoMessage:new{

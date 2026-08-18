@@ -16,10 +16,20 @@ trap 'lipc-set-prop com.lab126.powerd deferSuspend 0 2>/dev/null; echo "$(date) 
 
 echo "$(date) - always-on mode started" >> "$LOGFILE"
 
+# NOTA TECNICA: en vez de esperar un nombre de evento especifico de
+# "Disconnect_Result" (asumido de la pila Bluedroid, 11th gen+ y que
+# no existe/no esta documentado en la pila Broadcom BSA de 8th-10th gen),
+# usamos CUALQUIER evento de btfd como disparador y verificamos el estado
+# real via la propiedad documentada ListConnected. Esto funciona sin
+# importar el nombre interno del evento, en ambas pilas Bluetooth.
+is_connected() {
+  lipc-get-prop com.lab126.btfd ListConnected 2>/dev/null | grep -qi "$MAC"
+}
+
 lipc-wait-event -m com.lab126.btfd "*" | while read EVENT; do
-  if echo "$EVENT" | grep -q "Disconnect_Result"; then
+  if ! is_connected; then
     lipc-set-prop com.lab126.btfd Connect "$MAC" 2>/dev/null
-    echo "$(date) - disconnect detected, reconnected immediately" >> "$LOGFILE"
+    echo "$(date) - desconexion detectada (evento: $EVENT), reconectado" >> "$LOGFILE"
   fi
 done &
 
@@ -35,6 +45,11 @@ while :; do
     lipc-set-prop com.lab126.powerd deferSuspend 0 2>/dev/null
     echo "$(date) - battery at ${BATT}%, sleep prevention removed, exiting" >> "$LOGFILE"
     exit 0
+  fi
+  # Red de seguridad adicional: revisa la conexion cada ciclo, no solo por evento
+  if ! is_connected; then
+    lipc-set-prop com.lab126.btfd Connect "$MAC" 2>/dev/null
+    echo "$(date) - chequeo periodico: desconectado, reconexion intentada" >> "$LOGFILE"
   fi
   sleep 600
 done
