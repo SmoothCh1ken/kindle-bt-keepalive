@@ -30,7 +30,7 @@ This fork adapts the original project for **8th-10th generation Kindles** (Broad
 | 11th gen+ (PW11/12, Oasis 2021+) | MediaTek + Bluedroid stack | ⚠️ Original target, not retested on this fork | Upstream project ([imanubdesigner/kindle-bt-keepalive](https://github.com/imanubdesigner/kindle-bt-keepalive)) was built and tested here on firmware 5.18.5.0.1. This fork's core `Connect`/`Disconnect` logic uses the same `com.lab126.btfd` LIPC interface present on both stacks, so it should keep working, but hasn't been re-verified on 11th gen+ after the changes below. |
 
 **What changed in this fork vs. upstream, and why:**
-- **"Get MAC Address" removed.** It relied on reading `/var/local/zbluetooth/bt_config.conf` (Bluedroid-only path) and later on LIPC hasharray properties (`ListPaired`) that exist on the BSA stack's `com.lab126.btfd` but whose query schema isn't publicly reverse-engineered (`lipc-hash-prop` calls return `lipcErrNoSuchSource`). Get your device MAC from your phone's Bluetooth settings instead, and enter it directly in `btkeepalive.conf`.
+- **"Get MAC Address" removed.** It relied on reading `/var/local/zbluetooth/bt_config.conf` (Bluedroid-only path) and later on LIPC hasharray properties (`ListPaired`) that exist on the BSA stack's `com.lab126.btfd` but whose query schema isn't publicly reverse-engineered (`lipc-hash-prop` calls return `lipcErrNoSuchSource`). Get your device MAC from your phone or the headphone box instead — see [Find your device MAC](#3-configure-your-bluetooth-device).
 - **Known limitation:** the disconnect-detection logic in `btconnect.sh` checks `ListConnected`, which is also a hasharray (`Has`) type property — `lipc-get-prop` can only read `Int`/`Str` types, so this check currently can't reliably confirm connection state. In practice this just means the reconnect logic fires on every Bluetooth event instead of only on real disconnects, which is harmless (repeated `Connect` calls are a no-op if already connected) but noisier than ideal. PRs welcome if you crack the `lipc-hash-prop` query schema for this daemon.
 
 ---
@@ -60,7 +60,7 @@ This project was born out of a necessity to preserve that very atmosphere. I dis
 
 - **KUAL Menu Integration**: No more SSH or KTerm needed after setup
 - **KOReader Plugin**: Full menu access inside KOReader, no exit required
-- **Get MAC Address**: Not available on 8th-10th gen (Broadcom BSA Bluetooth stack) — see [Compatibility](#compatibility). Find your device MAC from your phone's Bluetooth settings instead.
+- **Get MAC Address**: Not available on 8th-10th gen (Broadcom BSA Bluetooth stack) — see [Compatibility](#compatibility). Find your device MAC from your phone or the headphone box instead ([instructions](#3-configure-your-bluetooth-device)).
 - **Current Mode**: Check active mode with one click
 - **Three Modes**: Reading Mode, Always On, and Default (Disable)
 - **Persistent**: Settings survive reboots via Upstart
@@ -160,8 +160,14 @@ Edit `/mnt/us/btkeepalive/btkeepalive.conf` and replace the MAC address.
 - **On Kindle**: vi/vim (via SSH/KTerm)
 
 **Find your device MAC:**
-- Pair your headphones via Kindle: Settings → Bluetooth
-- On 8th-10th gen devices, **the "Get MAC Address" tool is not available** (see [Compatibility](#compatibility)). Get the MAC from your phone's Bluetooth settings instead (tap the paired device → device info), or via SSH/KTerm: `lipc-probe com.lab126.btfd`
+
+On 8th-10th gen devices, **the "Get MAC Address" tool is not available** (see [Compatibility](#compatibility)). Pair your headphones via Kindle: Settings → Bluetooth first, then get the MAC from one of these sources:
+
+- **From your phone (recommended, most reliable):**
+  - **Android**: Settings → Connected devices (or Bluetooth) → tap the ⚙️ gear/info icon next to your paired headphones → the MAC address is listed as "Device address" or similar (may require enabling **Developer Options** → **About phone** → tap "Build number" 7 times → then the address may also show under Developer Options → "Bluetooth device address").
+  - **iOS**: iPhones don't expose the Bluetooth MAC directly in Settings for privacy reasons. Use **Settings → General → About** and look for "Bluetooth" (only shown on some models/iOS versions), or use a third-party BLE scanner app (e.g. "LightBlue"), or fall back to the headphone box method below.
+- **From the headphone box or manual:** many Bluetooth headphones print their MAC address (sometimes labeled "MAC", "BT Address", or inside a QR/barcode sticker) on the retail box, a sticker on the charging case, or in the printed manual/quick-start guide.
+- **Via SSH/KTerm on the Kindle** (if you have shell access): `lipc-probe -v com.lab126.btfd` will show the Bluetooth properties the daemon exposes; cross-check `BTconnectedDevName` while the device is connected to confirm you've got the right one, though the MAC itself may not be directly readable this way on the BSA stack — the phone or box method above is more reliable on 8th-10th gen.
 
 **Edit the config file:**
 
