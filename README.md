@@ -17,7 +17,21 @@
 
 Keep your Bluetooth headphones connected on a jailbroken Kindle, without unexpected disconnections caused by screen saver or suspend mode. Features both **KUAL** and **KOReader** integration for point-and-click control directly from your Kindle.
 
-Tested on **Kindle Paperwhite 11th Generation, firmware 5.18.5.0.1**.
+This fork adapts the original project for **8th-10th generation Kindles** (Broadcom BSA Bluetooth stack), where the underlying LIPC interface differs from the newer Bluedroid-based generations the upstream project targets. See [Compatibility](#compatibility) below.
+
+---
+
+## Compatibility
+
+| Generation | Chip / BT stack | Status | Notes |
+|---|---|---|---|
+| 8th gen (2016) | NXP + Broadcom BCM4343 (BSA stack) | ✅ Verified | Tested on firmware **5.16.2.2**. Reading Mode, Always On, Current Mode, Default all confirmed working. |
+| 9th-10th gen (Oasis 2/3, PW4, Kindle 10th gen) | NXP + Broadcom BCM4343 (BSA stack) | ⚠️ Likely, not verified | Same hardware/BT stack family as 8th gen based on public teardown/reverse-engineering info, but not independently tested on this fork. |
+| 11th gen+ (PW11/12, Oasis 2021+) | MediaTek + Bluedroid stack | ⚠️ Original target, not retested on this fork | Upstream project ([imanubdesigner/kindle-bt-keepalive](https://github.com/imanubdesigner/kindle-bt-keepalive)) was built and tested here on firmware 5.18.5.0.1. This fork's core `Connect`/`Disconnect` logic uses the same `com.lab126.btfd` LIPC interface present on both stacks, so it should keep working, but hasn't been re-verified on 11th gen+ after the changes below. |
+
+**What changed in this fork vs. upstream, and why:**
+- **"Get MAC Address" removed.** It relied on reading `/var/local/zbluetooth/bt_config.conf` (Bluedroid-only path) and later on LIPC hasharray properties (`ListPaired`) that exist on the BSA stack's `com.lab126.btfd` but whose query schema isn't publicly reverse-engineered (`lipc-hash-prop` calls return `lipcErrNoSuchSource`). Get your device MAC from your phone's Bluetooth settings instead, and enter it directly in `btkeepalive.conf`.
+- **Known limitation:** the disconnect-detection logic in `btconnect.sh` checks `ListConnected`, which is also a hasharray (`Has`) type property — `lipc-get-prop` can only read `Int`/`Str` types, so this check currently can't reliably confirm connection state. In practice this just means the reconnect logic fires on every Bluetooth event instead of only on real disconnects, which is harmless (repeated `Connect` calls are a no-op if already connected) but noisier than ideal. PRs welcome if you crack the `lipc-hash-prop` query schema for this daemon.
 
 ---
 
@@ -44,9 +58,9 @@ This project was born out of a necessity to preserve that very atmosphere. I dis
 
 ## Features ⚡
 
-- ![NEW](https://img.shields.io/badge/NEW-FF6600?style=for-the-badge) **KOReader Plugin**: Full menu access inside KOReader, no exit required
 - **KUAL Menu Integration**: No more SSH or KTerm needed after setup
-- **Get MAC Address**: One-click MAC detection via KUAL or KOReader
+- **KOReader Plugin**: Full menu access inside KOReader, no exit required
+- **Get MAC Address**: Not available on 8th-10th gen (Broadcom BSA Bluetooth stack) — see [Compatibility](#compatibility). Find your device MAC from your phone's Bluetooth settings instead.
 - **Current Mode**: Check active mode with one click
 - **Three Modes**: Reading Mode, Always On, and Default (Disable)
 - **Persistent**: Settings survive reboots via Upstart
@@ -94,7 +108,6 @@ kindle-bt-keepalive/
 │   └── btkeepalive/
 │       ├── config.xml        ← KUAL extension config
 │       ├── menu.json         ← KUAL menu definition
-│       ├── get_mac.sh        ← MAC address detection
 │       ├── get_mode.sh       ← Current mode display
 │       ├── set_reading.sh
 │       ├── set_always_on.sh
@@ -148,9 +161,7 @@ Edit `/mnt/us/btkeepalive/btkeepalive.conf` and replace the MAC address.
 
 **Find your device MAC:**
 - Pair your headphones via Kindle: Settings → Bluetooth
-- Click **"Get MAC Address"** in the KUAL Bluetooth Keepalive menu (first menu item)
-- A Pillow notification shows your device's MAC address
-- Alternatively, via SSH or Kterm: `cat /var/local/zbluetooth/bt_config.conf`
+- On 8th-10th gen devices, **the "Get MAC Address" tool is not available** (see [Compatibility](#compatibility)). Get the MAC from your phone's Bluetooth settings instead (tap the paired device → device info), or via SSH/KTerm: `lipc-probe com.lab126.btfd`
 
 **Edit the config file:**
 
@@ -163,11 +174,9 @@ Edit `/mnt/us/btkeepalive/btkeepalive.conf` and replace the MAC address.
 
 1. Open **KUAL** on your Kindle
 2. You'll see **Bluetooth Keepalive** in the menu
-3. **First click "Get MAC Address"** (first menu item) to detect your paired device MAC
-4. A notification shows: "Device MAC: XX:XX:XX:XX:XX:XX"
-5. Copy the MAC and edit [`/mnt/us/btkeepalive/btkeepalive.conf`](#configuration-file) with any text editor
-6. Select **Reading Mode** or **Always On**
-7. A notification confirms the mode change
+3. Make sure you've already edited [`/mnt/us/btkeepalive/btkeepalive.conf`](#configuration-file) with your device MAC (see step 3 above)
+4. Select **Reading Mode** or **Always On**
+5. A notification confirms the mode change
 
 > **Tip**: You can verify the service is running with the [Usage Verification](#usage-verification) steps.
 
@@ -177,7 +186,7 @@ If you use KOReader, you can control Bluetooth Keepalive without leaving your bo
 
 1. Open **KOReader**
 2. Tap **Tools → Bluetooth Keepalive**
-3. All the same menu items as KUAL are available: **Get MAC Address**, **Current Mode**, **Reading Mode**, **Always On**, **Default (Disable)**
+3. All the same menu items as KUAL are available: **Current Mode**, **Reading Mode**, **Always On**, **Default (Disable)**
 4. Mode changes are confirmed with a KOReader popup notification
 
 ---
