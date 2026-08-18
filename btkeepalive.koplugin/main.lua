@@ -18,10 +18,6 @@ function BTKeepalive:addToMainMenu(menu_items)
         sorting_hint = "tools",
         sub_item_table = {
             {
-                text = _("Get MAC Address"),
-                callback = function() self:getMACAddress() end,
-            },
-            {
                 text = _("Current Mode"),
                 callback = function() self:getCurrentMode() end,
             },
@@ -39,52 +35,6 @@ function BTKeepalive:addToMainMenu(menu_items)
             },
         },
     }
-end
-
--- NOTA TECNICA: en Kindles 8th-10th gen (chip NXP + radio Broadcom BCM4343)
--- el stack Bluetooth es Broadcom BSA (bsa_server sobre UART). No existe un
--- archivo de config legible ni en /var/local/zbluetooth ni en /opt/zbluetooth
--- (esas rutas son exclusivas de 11th gen+ con pila Bluedroid/btmanagerd).
--- Se consulta en su lugar la propiedad LIPC "ListPaired" de com.lab126.btfd,
--- que es la capa de abstraccion comun a ambos stacks Bluetooth.
-function BTKeepalive:getMACAddress()
-    local handle = io.popen("lipc-get-prop com.lab126.btfd ListPaired 2>/dev/null")
-    local raw = handle and handle:read("*a") or ""
-    if handle then handle:close() end
-
-    if raw == "" then
-        UIManager:show(InfoMessage:new{
-            text = _("No paired devices found.\nPair via Settings → Bluetooth first."),
-        })
-        return
-    end
-
-    local macs = {}
-    local seen = {}
-    for mac in raw:gmatch("(%x%x:%x%x:%x%x:%x%x:%x%x:%x%x)") do
-        mac = mac:upper()
-        if not seen[mac] then
-            seen[mac] = true
-            table.insert(macs, mac)
-        end
-    end
-
-    if #macs == 0 then
-        UIManager:show(InfoMessage:new{
-            text = _("No paired devices found."),
-        })
-        return
-    end
-
-    local start = math.max(1, #macs - 2)
-    local lines = {}
-    for i = start, #macs do
-        table.insert(lines, macs[i])
-    end
-
-    UIManager:show(InfoMessage:new{
-        text = _("Paired Bluetooth Devices:\n\n") .. table.concat(lines, "\n"),
-    })
 end
 
 function BTKeepalive:getCurrentMode()
