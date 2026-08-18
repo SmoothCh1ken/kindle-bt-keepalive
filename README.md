@@ -25,7 +25,7 @@ This fork adapts the original project for **8th-10th generation Kindles** (Broad
 
 | Generation | Chip / BT stack | Status | Notes |
 |---|---|---|---|
-| 8th gen (2016) | NXP + Broadcom BCM4343 (BSA stack) | ✅ Verified | Tested on firmware **5.16.2.2**. Reading Mode, Always On, Current Mode, Default all confirmed working. |
+| 8th gen (2016) | NXP + Broadcom BCM4343 (BSA stack) | ✅ Verified | Tested on firmware **5.16.2.1**. Reading Mode, Always On, Current Mode, Default all confirmed working. |
 | 9th-10th gen (Oasis 2/3, PW4, Kindle 10th gen) | NXP + Broadcom BCM4343 (BSA stack) | ⚠️ Likely, not verified | Same hardware/BT stack family as 8th gen based on public teardown/reverse-engineering info, but not independently tested on this fork. |
 | 11th gen+ (PW11/12, Oasis 2021+) | MediaTek + Bluedroid stack | ⚠️ Original target, not retested on this fork | Upstream project ([imanubdesigner/kindle-bt-keepalive](https://github.com/imanubdesigner/kindle-bt-keepalive)) was built and tested here on firmware 5.18.5.0.1. This fork's core `Connect`/`Disconnect` logic uses the same `com.lab126.btfd` LIPC interface present on both stacks, so it should keep working, but hasn't been re-verified on 11th gen+ after the changes below. |
 
